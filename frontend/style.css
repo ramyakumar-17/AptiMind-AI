@@ -1,0 +1,67 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#0f172a;
+}
+
+.login-container{
+    width:650px;
+    background:#111827;
+    padding:40px;
+    border-radius:20px;
+    border:1px solid #38bdf8;
+    box-shadow:0 0 20px rgba(56,189,248,0.3);
+    text-align:center;
+}
+
+.logo{
+    font-size:60px;
+    margin-bottom:10px;
+}
+
+h1{
+    color:#38bdf8;
+    margin-bottom:10px;
+}
+
+p{
+    color:#cbd5e1;
+    margin-bottom:20px;
+}
+
+input{
+    width:100%;
+    padding:15px;
+    margin:10px 0;
+    background:#0f172a;
+    color:white;
+    border:1px solid #38bdf8;
+    border-radius:10px;
+    font-size:16px;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    margin-top:15px;
+    background:#38bdf8;
+    color:#020617;
+    border:none;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.admin-btn{
+    background:#38bdf8;
+    color:#020617;
+}

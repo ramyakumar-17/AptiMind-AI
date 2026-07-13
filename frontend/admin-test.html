@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Admin Test</title>
+
+<link rel="stylesheet" href="css/dashboard.css">
+
+</head>
+
+<body>
+
+<div class="main-content">
+
+<h1>📚 Today's Admin Test</h1>
+
+<p>
+Today's mock test is created by the Admin.
+</p>
+
+<br>
+
+<div class="card">
+
+<h2>Instructions</h2>
+
+<ul style="line-height:40px;font-size:18px;">
+
+<li>Total Questions : 15</li>
+
+<li>Each Question carries 1 Mark.</li>
+
+<li>No Negative Marking.</li>
+
+<li>Read every question carefully.</li>
+
+<li>Click Start Test.</li>
+
+</ul>
+
+<br>
+
+<button onclick="startAdminTest()">
+
+🚀 Start Test
+
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+async function startAdminTest(){
+
+try{
+
+const response = await fetch(
+"http://localhost:3000/api/tests/published"
+);
+
+const data = await response.json();
+
+if(!data || !data.questions || data.questions.length===0){
+
+alert("No Admin Test Available.");
+
+return;
+
+}
+
+localStorage.setItem(
+"questions",
+JSON.stringify(data.questions)
+);
+
+localStorage.setItem(
+"currentTestId",
+data._id
+);
+
+localStorage.setItem(
+"testType",
+"Admin Test"
+);
+
+window.location.href="admin-test-questions.html";
+
+}
+catch(err){
+
+console.log(err);
+
+alert("Unable to load Admin Test");
+
+}
+
+}
+
+</script>
+</body>
+
+</html>

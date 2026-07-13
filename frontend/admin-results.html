@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Admin Results</title>
+
+<link rel="stylesheet" href="css/dashboard.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<h2>AptiMind AI</h2>
+
+<a href="admin-dashboard.html">🏠 Dashboard</a>
+<a href="create-admin-test.html">📚 Create Test</a>
+<a href="manage-users.html">👥 Users</a>
+<a href="admin-results.html">📊 Results</a>
+<a href="login.html">🚪 Logout</a>
+
+</div>
+
+<div class="main-content">
+
+<h1>📊 Student Results</h1>
+
+<br>
+
+<input
+type="text"
+id="search"
+placeholder="Search by Name or Email..."
+onkeyup="searchUser()">
+
+<br><br>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>S.No</th>
+<th>Name</th>
+<th>Email</th>
+<th>Score</th>
+<th>Percentage</th>
+
+</tr>
+
+</thead>
+
+<tbody id="resultTable">
+
+</tbody>
+
+</table>
+
+
+</div>
+
+<script>
+
+let allResults = [];
+
+loadResults();
+
+async function loadResults(){
+
+try{
+
+const response = await fetch(
+"http://localhost:3000/api/results/admin"
+);
+
+allResults = await response.json();
+
+displayResults(allResults);
+
+}
+catch(err){
+
+console.log(err);
+
+alert("Unable to load results");
+
+}
+
+}
+
+function displayResults(results){
+
+let html="";
+
+results.sort((a,b)=>b.score-a.score);
+
+results.forEach((user,index)=>{
+
+html += `
+
+<tr>
+
+<td>${index+1}</td>
+
+<td>${user.fullname}</td>
+
+<td>${user.email}</td>
+
+<td>${user.score}/${user.total}</td>
+
+<td>${user.percentage}%</td>
+
+</tr>
+
+`;
+
+});
+
+document.getElementById("resultTable").innerHTML = html;
+
+}
+
+function searchUser(){
+
+let keyword = document
+.getElementById("search")
+.value
+.toLowerCase();
+
+let filtered = allResults.filter(user =>
+
+user.fullname.toLowerCase().includes(keyword) ||
+
+user.email.toLowerCase().includes(keyword)
+
+);
+
+displayResults(filtered);
+
+}
+
+</script>
+
+</body>
+
+</html>

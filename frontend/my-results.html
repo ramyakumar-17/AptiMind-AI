@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>My Results</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+
+</head>
+
+<body>
+
+<div class="main-content">
+
+    <h1>📊 My Results</h1>
+
+    <div id="results"></div>
+
+    <br>
+
+    <button onclick="clearHistory()">
+        🗑️ Clear History
+    </button>
+
+    <button onclick="goHome()">
+        🏠 Back to Dashboard
+    </button>
+
+</div>
+
+<script>
+
+let results = JSON.parse(localStorage.getItem("results")) || [];
+
+let html = "";
+
+if(results.length === 0){
+
+    html = "<h2>No Test History Found.</h2>";
+
+}
+else{
+
+    results.reverse().forEach((r,index)=>{
+
+        html += `
+        <div style="
+            border:1px solid #38bdf8;
+            padding:20px;
+            margin:15px;
+            border-radius:10px;
+        ">
+
+            <h3>Test ${results.length-index}</h3>
+
+            <p><b>Date:</b> ${r.date}</p>
+
+            <p><b>Score:</b> ${r.score} / ${r.total}</p>
+
+            <p><b>Percentage:</b> ${r.percentage}%</p>
+
+        </div>
+        `;
+
+    });
+
+}
+
+document.getElementById("results").innerHTML = html;
+
+function clearHistory(){
+
+    if(confirm("Are you sure you want to clear all results?")){
+
+        localStorage.removeItem("results");
+
+        location.reload();
+
+    }
+
+}
+
+function goHome(){
+
+    window.location.href = "user-dashboard.html";
+
+}
+
+</script>
+
+</body>
+
+</html>

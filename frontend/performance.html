@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Performance Dashboard</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+<div class="main-content">
+
+<h1>📊 Performance Dashboard</h1>
+
+<p style="color:#cbd5e1;">
+Track your placement preparation progress.
+</p>
+
+<div class="cards">
+
+<div class="card">
+<h2 id="testsTaken">0</h2>
+<p>📝 Tests Taken</p>
+</div>
+
+<div class="card">
+<h2 id="averageScore">0%</h2>
+<p>📈 Average Score</p>
+</div>
+
+<div class="card">
+<h2 id="highestScore">0</h2>
+<p>🏆 Highest Score</p>
+</div>
+
+<div class="card">
+<h2 id="averageTime">0 min</h2>
+<p>⏱ Average Time</p>
+</div>
+
+</div>
+
+<br><br>
+
+<div class="card">
+
+<h2 style="color:#38bdf8;">
+📈 Performance Chart
+</h2>
+
+<br>
+
+<canvas id="performanceChart"></canvas>
+
+</div>
+
+<br><br>
+
+<div class="card">
+
+<h2 style="color:#38bdf8;">
+📋 Recent Test History
+</h2>
+
+<br>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Test</th>
+
+<th>Score</th>
+
+<th>Percentage</th>
+
+<th>Date</th>
+
+</tr>
+
+</thead>
+
+<tbody id="historyTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+<br>
+
+<div style="text-align:center;">
+
+<button onclick="goHome()">
+
+🏠 Back to Dashboard
+
+</button>
+
+</div>
+<script>
+
+const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+let results = [];
+
+async function loadPerformance(){
+
+try{
+
+const response = await fetch(`http://localhost:3000/api/results/user/${currentUser._id}`);
+
+const data = await response.json();
+
+results = data.results;
+
+if(results.length===0){
+
+alert("No test results available.");
+
+window.location.href="user-dashboard.html";
+
+return;
+
+}
+
+let totalTests = results.length;
+let totalPercentage = 0;
+let highest = 0;
+let totalTime = 0;
+
+let labels = [];
+let scores = [];
+let historyHTML = "";
+
+results.forEach((r,index)=>{
+
+totalPercentage += Number(r.percentage);
+
+if(r.score > highest){
+highest = r.score;
+}
+
+let time = Number(r.timeTaken || 0);
+totalTime += time;
+
+let minutes = Math.floor(time / 60);
+let seconds = time % 60;
+
+labels.push("Test " + (index+1));
+scores.push(r.percentage);
+
+historyHTML += `
+<tr>
+<td>${r.testType}</td>
+<td>${r.score}/${r.total}</td>
+<td>${r.percentage}%</td>
+<td>${new Date(r.date).toLocaleString()}</td>
+</tr>
+`;
+
+});
+
+let average = (totalPercentage / totalTests).toFixed(1);
+
+let avgTime = Math.floor(totalTime / totalTests);
+
+let avgMinutes = Math.floor(avgTime / 60);
+let avgSeconds = avgTime % 60;
+
+document.getElementById("testsTaken").innerHTML = totalTests;
+
+document.getElementById("averageScore").innerHTML =
+average + "%";
+
+document.getElementById("highestScore").innerHTML =
+highest;
+
+document.getElementById("averageTime").innerHTML =
+`${avgMinutes}m ${avgSeconds}s`;
+
+document.getElementById("historyTable").innerHTML =
+historyHTML;
+
+new Chart(document.getElementById("performanceChart"),{
+
+type:"line",
+
+data:{
+
+labels:labels,
+
+datasets:[{
+
+label:"Performance (%)",
+
+data:scores,
+
+fill:false,
+
+tension:0.4,
+
+borderColor:"#38bdf8",
+
+backgroundColor:"#38bdf8",
+
+borderWidth:3,
+
+pointRadius:5
+
+}]
+
+},
+
+options:{
+
+responsive:true,
+
+plugins:{
+legend:{
+labels:{
+color:"white"
+}
+}
+},
+
+scales:{
+
+x:{
+ticks:{
+color:"white"
+},
+grid:{
+color:"#334155"
+}
+},
+
+y:{
+beginAtZero:true,
+max:100,
+
+ticks:{
+color:"white"
+},
+
+grid:{
+color:"#334155"
+}
+
+}
+
+}
+
+}
+
+});
+
+}catch(err){
+
+console.log(err);
+
+alert("Unable to load performance.");
+
+}
+
+}
+
+function goHome(){
+
+window.location.href="user-dashboard.html";
+
+}
+
+loadPerformance();
+
+</script>
+</body>
+
+</html>

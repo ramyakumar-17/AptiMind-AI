@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Leaderboard</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+
+</head>
+
+<body>
+
+<div class="main-content">
+
+<h1>🏆 Leaderboard</h1>
+
+<p style="color:#cbd5e1;margin-bottom:30px;">
+Top performers in AptiMind AI Placement Practice
+</p>
+
+<!-- Top 3 Cards -->
+
+<div class="cards">
+
+<div class="card" style="text-align:center;border:2px solid gold;">
+
+<h1>🥇</h1>
+
+<h2 id="goldName">Ramya</h2>
+
+<p id="goldScore">0%</p>
+
+</div>
+
+<div class="card" style="text-align:center;border:2px solid silver;">
+
+<h1>🥈</h1>
+
+<h2 id="silverName">AI Demo User</h2>
+
+<p id="silverScore">80%</p>
+
+</div>
+
+<div class="card" style="text-align:center;border:2px solid #cd7f32;">
+
+<h1>🥉</h1>
+
+<h2 id="bronzeName">Guest</h2>
+
+<p id="bronzeScore">70%</p>
+
+</div>
+
+</div>
+
+<br><br>
+
+<div class="card">
+
+<h2 style="color:#38bdf8;">
+🏅 Complete Leaderboard
+</h2>
+
+<br>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Rank</th>
+
+<th>Name</th>
+
+<th>Best Score</th>
+
+<th>Percentage</th>
+
+</tr>
+
+</thead>
+
+<tbody id="leaderboardBody">
+
+</tbody>
+
+</table>
+
+</div>
+
+<br>
+
+<div style="text-align:center;">
+
+<button onclick="goHome()">
+
+🏠 Back to Dashboard
+
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+let results = JSON.parse(localStorage.getItem("results")) || [];
+
+let bestScore = 0;
+let bestPercentage = 0;
+
+results.forEach(r => {
+
+    if (r.score > bestScore) {
+
+        bestScore = r.score;
+        bestPercentage = r.percentage;
+
+    }
+
+});
+
+const leaderboard = [
+
+    {
+        rank: "🥇",
+        name: "Ramya",
+        score: bestScore,
+        percentage: bestPercentage
+    },
+
+    {
+        rank: "🥈",
+        name: "AI Demo User",
+        score: 8,
+        percentage: 80
+    },
+
+    {
+        rank: "🥉",
+        name: "Guest",
+        score: 7,
+        percentage: 70
+    }
+
+];
+
+// Fill Top 3 Cards
+
+document.getElementById("goldName").innerHTML =
+leaderboard[0].name;
+
+document.getElementById("goldScore").innerHTML =
+leaderboard[0].percentage + "%";
+
+document.getElementById("silverName").innerHTML =
+leaderboard[1].name;
+
+document.getElementById("silverScore").innerHTML =
+leaderboard[1].percentage + "%";
+
+document.getElementById("bronzeName").innerHTML =
+leaderboard[2].name;
+
+document.getElementById("bronzeScore").innerHTML =
+leaderboard[2].percentage + "%";
+
+// Create Leaderboard Table
+
+let html = "";
+
+leaderboard.forEach(player => {
+
+html += `
+<tr>
+
+<td style="text-align:center;padding:15px;">
+${player.rank}
+</td>
+
+<td>${player.name}</td>
+
+<td>${player.score}</td>
+
+<td>${player.percentage}%</td>
+
+</tr>
+`;
+
+});
+
+document.getElementById("leaderboardBody").innerHTML = html;
+
+function goHome(){
+
+    window.location.href = "user-dashboard.html";
+
+}
+
+</script>
+</body>
+
+</html>

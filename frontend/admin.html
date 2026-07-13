@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="login-container">
+
+    <div class="logo">⚙️</div>
+
+    <h1>Admin Login</h1>
+
+    <p>Login to Manage GenAI Smart Aptitude For Placement Preparation</p>
+
+    <input type="text" id="username" placeholder="Admin Username">
+
+    <input type="password" id="password" placeholder="Admin Password">
+
+    <button onclick="adminLogin()">
+        Login as Admin
+    </button>
+
+</div>
+
+<script>
+
+function adminLogin(){
+
+    let username =
+    document.getElementById("username").value;
+
+    let password =
+    document.getElementById("password").value;
+
+    if(
+        username === "admin" &&
+        password === "admin123"
+    ){
+        window.location.href =
+        "admin-dashboard.html";
+    }
+    else{
+        alert(
+        "Invalid Username or Password"
+        );
+    }
+
+}
+
+</script>
+
+</body>
+</html>

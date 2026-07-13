@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+
+<script>
+if(localStorage.getItem("isLoggedIn") !== "true"){
+    alert("Please Login First");
+    window.location.href = "login.html";
+}
+
+function logout(){
+    localStorage.removeItem("isLoggedIn");
+    alert("Logged Out Successfully!");
+    window.location.href = "login.html";
+}
+</script>
+
+<div class="sidebar">
+
+    <h2>AptiMind AI</h2>
+
+    <a href="user-dashboard.html">🏠 Dashboard</a>
+    <a href="#" onclick="logout()">🚪 Logout</a>
+
+</div>
+
+<div class="main-content">
+
+    <h1>Welcome 👋</h1>
+
+    <p>Welcome to AptiMind AI Smart Aptitude Coach.</p>
+
+    <div class="cards">
+
+        <div class="card" onclick="window.location.href='start-test.html?category=quantitative'">
+            <h2>📝 Quantitative Reasoning Test</h2>
+            <p>Take AI-generated quantitative aptitude tests.</p>
+
+        </div>
+
+        <div class="card" onclick="window.location.href='start-test.html?category=logical'">
+            <h2>🧠 Logical Reasoning Test</h2>
+            <p>Practice AI-generated logical reasoning questions.</p>
+        </div>
+
+        <div class="card" onclick="window.location.href='start-test.html?category=verbal'">
+           <h2>📖 Verbal Ability Test</h2>
+           <p>Improve grammar, vocabulary and verbal ability.</p>
+        </div>
+
+        <div class="card" onclick="window.location.href='ai-chat.html'">
+            <h2>🤖 AI ChatBot</h2>
+            <p>Ask anything about interviews</p>
+        </div>
+
+        <div class="card" onclick="window.location.href='my-results.html'">
+            <h2>📊 My Results</h2>
+            <p>View previous test history</p>
+        </div>
+
+        <div class="card" onclick="window.location.href='performance.html'">
+            <h2>📈 Performance</h2>
+            <p>View analytics dashboard</p>
+        </div>
+
+        <div class="card" onclick="location.href='admin-test.html'">
+           <h2>📚 Daily Test</h2>
+           <p>Attend Today's Mock Test</p>
+        </div>
+
+        <div class="card"
+        onclick="location.href='admin-test-leaderboard.html'">
+        <h2>🏆</h2>
+        <p>Daily Test Leaderboard</p>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

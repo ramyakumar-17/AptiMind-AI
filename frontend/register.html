@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register - AptiMind AI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <h1>Create Account</h1>
+
+    <p>Practice Smarter. Get Placement Ready.</p>
+
+    <input type="text" id="fullname" placeholder="Full Name">
+
+    <input type="email" id="email" placeholder="Email Address">
+
+    <input type="text" id="mobile" placeholder="Mobile Number">
+
+    <input type="text" id="college" placeholder="College Name">
+
+    <input type="password" id="password" placeholder="Password">
+
+    <input type="password" id="confirmPassword" placeholder="Confirm Password">
+
+    <button onclick="register()">Create Account</button>
+
+    <br><br>
+
+    <a href="login.html" style="color:#38bdf8;text-decoration:none;">
+        Already have an account? Login
+    </a>
+
+</div>
+
+<script>
+
+async function register(){
+
+    let fullname = document.getElementById("fullname").value.trim();
+    let email = document.getElementById("email").value.trim();
+    let mobile = document.getElementById("mobile").value.trim();
+    let college = document.getElementById("college").value.trim();
+    let password = document.getElementById("password").value;
+    let confirmPassword = document.getElementById("confirmPassword").value;
+
+    if(fullname === ""){
+        alert("Please enter your Full Name");
+        return;
+    }
+
+    if(email === ""){
+        alert("Please enter your Email");
+        return;
+    }
+
+    if(mobile.length !== 10){
+        alert("Mobile Number must be 10 digits");
+        return;
+    }
+
+    if(college === ""){
+        alert("Please enter your College Name");
+        return;
+    }
+
+    if(password.length < 6){
+        alert("Password must contain at least 6 characters");
+        return;
+    }
+
+    if(password !== confirmPassword){
+        alert("Passwords do not match");
+        return;
+    }
+
+    try{
+
+        const response = await fetch("http://localhost:3000/api/auth/register",{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+                fullname,
+                email,
+                mobile,
+                college,
+                password
+            })
+
+        });
+
+        const data = await response.json();
+
+        if(data.success){
+
+            alert("✅ Registration Successful");
+
+            window.location.href="login.html";
+
+        }
+        else{
+
+            alert(data.message);
+
+        }
+
+    }
+    catch(err){
+
+        console.log(err);
+
+        alert("Server Error");
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>

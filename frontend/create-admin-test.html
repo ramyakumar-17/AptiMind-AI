@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Create Admin Test</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <h2>AptiMind AI</h2>
+
+    <a href="admin-dashboard.html">🏠 Dashboard</a>
+    <a href="create-admin-test.html">📚 Create Test</a>
+    <a href="manage-users.html">👥 Users</a>
+    <a href="admin-results.html">📊 Results</a>
+    <a href="login.html">🚪 Logout</a>
+
+</div>
+
+<div class="main-content">
+
+    <h1>📚 Create Today's Test</h1>
+
+    <p>Create a new placement mock test.</p>
+
+    <br>
+
+    <label><b>Test Name</b></label>
+
+    <input
+        type="text"
+        id="testName"
+        placeholder="Today's Placement Mock Test">
+
+    <br>
+
+    <label><b>Number of Questions</b></label>
+
+    <select id="questionCount">
+
+        <option value="5">5 Questions</option>
+        <option value="10">10 Questions</option>
+        <option value="15" selected>15 Questions</option>
+        <option value="20">20 Questions</option>
+        <option value="25">25 Questions</option>
+        <option value="30">30 Questions</option>
+
+    </select>
+
+    <br><br>
+
+    <button onclick="createTest()">
+
+        ➜ Continue
+
+    </button>
+
+    <button onclick="deletePublishedTest()">
+      🗑 Delete Previous Published Test
+    </button>
+
+</div>
+
+<script>
+
+async function createTest(){
+
+    const testName =
+    document.getElementById("testName").value.trim();
+
+    const questionCount =
+    parseInt(document.getElementById("questionCount").value);
+
+    if(testName==""){
+
+        alert("Enter Test Name");
+
+        return;
+
+    }
+
+    try{
+
+        const response = await fetch(
+
+            "http://localhost:3000/api/tests",
+
+            {
+
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body:JSON.stringify({
+
+                    testName:testName,
+
+                    questionCount:questionCount,
+
+                    questions:[],
+
+                    isPublished:false
+
+                })
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if(data.success){
+
+            localStorage.setItem(
+
+                "currentTestId",
+
+                data.test._id
+
+            );
+
+            localStorage.setItem(
+
+                "adminQuestionLimit",
+
+                questionCount
+
+            );
+
+            window.location.href =
+            "add-admin-questions.html";
+
+        }
+
+        else{
+
+            alert(data.message);
+
+        }
+
+    }
+
+    catch(err){
+
+        console.log(err);
+
+        alert("Unable to Create Test");
+
+    }
+
+}
+
+async function deletePublishedTest(){
+
+if(!confirm("Delete Published Test?")) return;
+
+try{
+
+const response = await fetch(
+"http://localhost:3000/api/tests/published",
+{
+method:"DELETE"
+});
+
+const data = await response.json();
+
+localStorage.removeItem("questions");
+localStorage.removeItem("currentTestId");
+localStorage.removeItem("testType");
+
+alert(data.message);
+
+}
+catch(err){
+
+console.log(err);
+alert("Unable to delete test");
+
+}
+
+}
+</script>
+
+</body>
+
+</html>

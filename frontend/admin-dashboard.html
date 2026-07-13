@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+
+</head>
+
+<body>
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+    <h2>AptiMind AI</h2>
+
+    <a href="admin-dashboard.html">🏠 Dashboard</a>
+
+    <a href="login.html">🚪 Logout</a>
+
+</div>
+
+<!-- Main Content -->
+
+<div class="main-content">
+
+    <h1>👨‍💼 Admin Dashboard</h1>
+
+    <p>Welcome, Admin 👋 Manage the AptiMind AI Placement Preparation System.</p>
+
+    <br>
+
+    <!-- Statistics -->
+
+    <div class="cards">
+
+        <div class="card">
+
+            <h2 id="totalUsers">0</h2>
+
+            <p>Total Users</p>
+
+        </div>
+
+        <div class="card">
+
+            <h2 id="totalTests">0</h2>
+
+            <p>Tests Taken</p>
+
+        </div>
+
+        <div class="card">
+
+            <h2 id="totalTopics">39</h2>
+
+            <p>Total Topics</p>
+
+        </div>
+
+        <div class="card">
+
+            <h2 id="averageScore">0%</h2>
+
+            <p>Average Score</p>
+
+        </div>
+
+    </div>
+
+    <br><br>
+
+    <h2 style="color:#38bdf8;">⚡ Quick Actions</h2>
+
+    <br>
+
+    <div class="cards">
+
+        <div class="card" onclick="location.href='create-admin-test.html'">
+           <h2>📚</h2>
+           <p>Create Today's Test</p>
+        </div>
+
+        <div class="card"
+             onclick="location.href='manage-users.html'">
+
+            <h2>👥</h2>
+
+            <p>Manage Users</p>
+
+        </div>
+
+        <div class="card"
+             onclick="location.href='admin-results.html'">
+
+            <h2>📊</h2>
+
+            <p>View Results</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+// Demo Statistics
+// Later these values will come from MongoDB
+
+let results = JSON.parse(localStorage.getItem("results")) || [];
+
+let totalTests = results.length;
+
+let totalScore = 0;
+
+results.forEach(r => {
+
+    totalScore += Number(r.percentage);
+
+});
+
+let average = totalTests > 0
+    ? (totalScore / totalTests).toFixed(1)
+    : 0;
+
+document.getElementById("totalUsers").innerHTML = 1;
+
+document.getElementById("totalTests").innerHTML = totalTests;
+
+document.getElementById("averageScore").innerHTML =
+average + "%";
+
+</script>
+
+</body>
+
+</html>

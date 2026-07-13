@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GenAI Smart Aptitude Coach For Placement Prepartion</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<script>
+
+async function userLogin(){
+
+    let email = document.getElementById("email").value.trim();
+    let password = document.getElementById("password").value;
+
+    try{
+
+        const response = await fetch("http://localhost:3000/api/auth/login",{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+                email,
+                password
+            })
+
+        });
+
+        const data = await response.json();
+
+        if(data.success){
+
+            alert("Login Successful!");
+
+            localStorage.setItem("isLoggedIn","true");
+
+            localStorage.setItem("currentUser",JSON.stringify(data.user));
+
+            window.location.href="user-dashboard.html";
+
+        }else{
+
+            alert(data.message);
+
+        }
+
+    }catch(err){
+
+        console.log(err);
+
+        alert("Server Error");
+
+    }
+
+}
+
+</script>
+
+<body>
+
+<div class="login-container">
+
+    <div class="logo">🧠</div>
+
+    <h1>GenAI Smart Aptitude Coach For Placement Preparation</h1>
+
+    <p>AI Powered Aptitude Learning Platform</p>
+
+    <input type="email" id="email" placeholder="Enter Email Address">
+
+    <input type="password" id="password" placeholder="Enter Password">
+    <button onclick="userLogin()">Login</button>
+    <br><br>
+
+    <a href="register.html">
+       <button>Create Account</button>
+    </a>
+    <a href="admin.html">
+        <button class="admin-btn">Admin Login</button>
+    </a>
+
+</div>
+
+</body>
+</html>

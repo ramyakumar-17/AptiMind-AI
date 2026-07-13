@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Start AI Test</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <h2>AptiMind AI</h2>
+
+    <a href="user-dashboard.html">🏠 Dashboard</a>
+    <a href="start-test.html">📝 Start Test</a>
+    <a href="performance.html">📊 My Results</a>
+    <a href="login.html">🚪 Logout</a>
+
+</div>
+
+<div class="main-content">
+
+<div style="max-width:1100px;margin:auto;">
+
+<h1>🚀 Start AI Test</h1>
+
+<p>Select your preferences before starting the test.</p>
+
+<br>
+
+<h2 style="color:#38bdf8;">📚 Select Topic</h2>
+
+<input
+type="text"
+id="searchTopic"
+placeholder="🔍 Search Topic..."
+onkeyup="filterTopics()">
+
+<br><br>
+
+<div id="topicsContainer"></div>
+
+<input type="hidden" id="topic">
+
+<br><br>
+
+<h2 style="color:#38bdf8;">⚙ Difficulty</h2>
+
+<select id="difficulty">
+
+<option>Easy</option>
+<option>Medium</option>
+<option>Hard</option>
+
+</select>
+
+<br><br>
+
+<h2 style="color:#38bdf8;">📄 Number of Questions</h2>
+
+<select id="count">
+
+<option>5</option>
+<option>10</option>
+<option>15</option>
+<option>20</option>
+<option>25</option>
+<option>30</option>
+
+</select>
+
+<br><br>
+
+<button onclick="startTest()">
+
+🚀 Start Test
+
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+const category =
+new URLSearchParams(window.location.search).get("category");
+
+let topics = {};
+
+if(category === "quantitative"){
+
+topics={
+
+"📘 Arithmetic":[
+"Percentage",
+"Profit & Loss",
+"Average",
+"Ratio & Proportion",
+"Simple Interest",
+"Compound Interest",
+"Partnership",
+"Alligation or Mixture"
+],
+
+"⏱ Time Based":[
+"Time & Work",
+"Time & Distance",
+"Boats & Streams",
+"Pipes & Cisterns",
+"Problems on Trains",
+"Races & Games of Skill"
+],
+
+"🔢 Number System":[
+"Number System",
+"HCF & LCM",
+"Decimal Fractions",
+"Simplification",
+"Square Roots & Cube Roots",
+"Problems on Numbers"
+],
+
+"📐 Advanced Maths":[
+"Probability",
+"Permutation & Combination",
+"Area",
+"Volume & Surface Area",
+"Heights & Distances",
+"Logarithms",
+"Surds & Indices"
+],
+
+"📊 Data Interpretation":[
+"Data Interpretation"
+]
+
+};
+
+}
+
+else if(category==="logical"){
+
+topics={
+
+"🧠 Logical Reasoning":[
+
+"Analogy",
+"Classification",
+"Coding-Decoding",
+"Blood Relation",
+"Direction Sense",
+"Seating Arrangement",
+"Ranking",
+"Series",
+"Statement & Conclusion",
+"Syllogism",
+"Puzzle",
+"Clock",
+"Calendar",
+"Mirror Image",
+"Paper Folding"
+
+]
+
+};
+
+}
+
+else if(category==="verbal"){
+
+topics={
+
+"📖 Verbal Ability":[
+
+"Synonyms",
+"Antonyms",
+"Sentence Correction",
+"Error Spotting",
+"Fill in the Blanks",
+"Reading Comprehension",
+"Para Jumbles",
+"Idioms & Phrases",
+"One Word Substitution",
+"Active & Passive Voice",
+"Direct & Indirect Speech"
+
+]
+
+};
+
+}
+
+generateTopics();
+
+function generateTopics(){
+
+    const container = document.getElementById("topicsContainer");
+
+    container.innerHTML = "";
+
+    for(const category in topics){
+
+        const heading = document.createElement("h2");
+        heading.className = "category";
+        heading.innerHTML = category + " ▼";
+
+        const group = document.createElement("div");
+        group.className = "topic-group";
+
+        heading.onclick = function(){
+
+            if(group.style.display=="none"){
+
+                group.style.display="grid";
+                heading.innerHTML = category + " ▼";
+
+            }else{
+
+                group.style.display="none";
+                heading.innerHTML = category + " ▶";
+
+            }
+
+        };
+
+        topics[category].forEach(topic=>{
+
+            const card = document.createElement("div");
+
+            card.className="card topic-card";
+
+            card.innerHTML=topic;
+
+            card.onclick=function(){
+
+                document.querySelectorAll(".topic-card")
+                .forEach(c=>c.classList.remove("topic-selected"));
+
+                card.classList.add("topic-selected");
+
+                document.getElementById("topic").value=topic;
+
+            };
+
+            group.appendChild(card);
+
+        });
+
+        container.appendChild(heading);
+        container.appendChild(group);
+
+    }
+
+}
+
+function filterTopics(){
+
+    const value=document.getElementById("searchTopic")
+    .value.toLowerCase();
+
+    document.querySelectorAll(".topic-card").forEach(card=>{
+
+        if(card.innerText.toLowerCase().includes(value)){
+
+            card.style.display="flex";
+
+        }else{
+
+            card.style.display="none";
+
+        }
+
+    });
+
+}
+
+async function startTest(){
+
+    const topic=document.getElementById("topic").value;
+    const difficulty=document.getElementById("difficulty").value;
+    const count=document.getElementById("count").value;
+
+    if(topic===""){
+
+        alert("Please select a topic.");
+        return;
+
+    }
+
+    try{
+
+        const response=await fetch(
+        "http://localhost:3000/api/ai/generate-questions",{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+                topic,
+                difficulty,
+                count
+            })
+
+        });
+
+        const result=await response.json();
+
+        localStorage.setItem(
+            "questions",
+            JSON.stringify(result.data)
+        );
+
+        window.location.href="test.html";
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        alert("Failed to generate questions.");
+
+    }
+
+}
+
+</script>
+
+</body>
+
+</html>

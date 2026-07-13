@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Admin Test</title>
+
+<link rel="stylesheet" href="css/dashboard.css">
+
+</head>
+
+<body>
+
+<div class="main-content">
+
+<h1>📚 Admin Test</h1>
+
+<div style="width:100%;background:#1e293b;border-radius:10px;height:20px;">
+
+<div id="progressBar"
+style="
+height:20px;
+width:0%;
+background:#38bdf8;
+border-radius:10px;">
+</div>
+
+</div>
+
+<br>
+
+<h3 id="questionNumber"></h3>
+
+<br>
+
+<div class="card">
+
+<h2 id="question"></h2>
+
+</div>
+
+<br>
+
+<div id="options"></div>
+
+<br>
+
+<button onclick="nextQuestion()">
+
+Next →
+
+</button>
+
+</div>
+
+<script>
+
+let questions =
+JSON.parse(localStorage.getItem("questions"));
+
+let currentQuestion=0;
+
+let userAnswers=[];
+
+displayQuestion();
+
+function displayQuestion(){
+
+document.getElementById("questionNumber").innerHTML=
+`Question ${currentQuestion+1} of ${questions.length}`;
+
+document.getElementById("progressBar").style.width=
+((currentQuestion+1)/questions.length)*100+"%";
+
+document.getElementById("question").innerHTML=
+questions[currentQuestion].question;
+
+console.log(questions[currentQuestion]);
+console.log(questions[currentQuestion].options);
+
+let html="";
+questions[currentQuestion].options.forEach((option,index)=>{
+
+let letter = String.fromCharCode(65 + index); // A,B,C,D
+
+html += `
+<label class="card option-card">
+
+<input
+type="radio"
+name="answer"
+value="${letter}">
+
+<span>${letter}. ${option}</span>
+
+</label>
+`;
+
+});
+
+document.getElementById("options").innerHTML=html;
+
+}
+
+function nextQuestion(){
+
+const selected=document.querySelector(
+'input[name="answer"]:checked'
+);
+
+if(!selected){
+
+alert("Select an answer");
+
+return;
+
+}
+
+userAnswers[currentQuestion]=selected.value;
+
+currentQuestion++;
+
+if(currentQuestion>=questions.length){
+
+localStorage.setItem(
+
+"userAnswers",
+
+JSON.stringify(userAnswers)
+
+);
+
+localStorage.setItem(
+
+"testType",
+
+"Admin Test"
+
+);
+
+localStorage.setItem(
+
+"timeTaken",
+
+0
+
+);
+
+window.location.href="result.html";
+
+return;
+
+}
+
+displayQuestion();
+
+if(currentQuestion==questions.length-1){
+
+document.querySelector("button").innerHTML=
+"✅ Submit Test";
+
+}
+else{
+
+document.querySelector("button").innerHTML=
+"Next →";
+
+}
+
+}
+
+</script>
+
+</body>
+
+</html>

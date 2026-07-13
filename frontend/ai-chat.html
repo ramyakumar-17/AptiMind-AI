@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>AptiMind AI Chat</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+
+</head>
+
+<body>
+
+<div class="main-content">
+
+<h1>🤖 AptiMind AI Tutor</h1>
+
+<p style="color:#cbd5e1;">
+Ask any aptitude, reasoning, coding or placement question.
+</p>
+
+<div class="card">
+
+<div id="chatBox"
+style="
+height:420px;
+overflow-y:auto;
+padding:20px;
+background:#0f172a;
+border-radius:15px;
+border:1px solid #334155;
+margin-bottom:20px;">
+
+<div style="
+background:#1e293b;
+padding:15px;
+border-radius:12px;
+color:white;
+max-width:75%;
+margin-bottom:15px;">
+
+🤖 Hello! I'm <b>AptiMind AI</b>.<br><br>
+
+Ask me anything about:
+<ul>
+<li>Aptitude</li>
+<li>Reasoning</li>
+<li>SQL</li>
+<li>Java</li>
+<li>Python</li>
+<li>Interview Preparation</li>
+</ul>
+
+</div>
+
+</div>
+
+<textarea
+id="question"
+rows="4"
+placeholder="Ask your question here..."
+style="resize:none;"></textarea>
+
+<br>
+
+<div style="display:flex;gap:15px;justify-content:flex-end;">
+
+<button onclick="clearChat()">
+🗑 Clear
+</button>
+
+<button onclick="askAI()">
+🚀 Ask AI
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+async function askAI(){
+
+    const question = document.getElementById("question").value.trim();
+
+    if(question==""){
+
+        alert("Enter your question");
+
+        return;
+
+    }
+
+    const chatBox = document.getElementById("chatBox");
+
+    // User Message
+    chatBox.innerHTML += `
+    <div style="
+        display:flex;
+        justify-content:flex-end;
+        margin:15px 0;">
+
+        <div style="
+            background:#2563eb;
+            color:white;
+            padding:15px;
+            border-radius:15px 15px 0 15px;
+            max-width:70%;">
+            👤 ${question}
+        </div>
+
+    </div>
+    `;
+
+    // AI Thinking
+    chatBox.innerHTML += `
+    <div id="thinking" style="
+        display:flex;
+        justify-content:flex-start;
+        margin:15px 0;">
+
+        <div style="
+            background:#1e293b;
+            color:white;
+            padding:15px;
+            border-radius:15px 15px 15px 0;
+            max-width:70%;">
+            🤖 Thinking...
+        </div>
+
+    </div>
+    `;
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    document.getElementById("question").value = "";
+
+    try{
+
+        const response = await fetch(
+        "http://localhost:3000/api/ai/chat",{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+                question
+            })
+
+        });
+
+        const result = await response.json();
+
+        document.getElementById("thinking").remove();
+
+        chatBox.innerHTML += `
+        <div style="
+            display:flex;
+            justify-content:flex-start;
+            margin:15px 0;">
+
+            <div style="
+                background:#1e293b;
+                color:white;
+                padding:15px;
+                border-radius:15px 15px 15px 0;
+                max-width:70%;
+                line-height:1.6;">
+                🤖 ${result.answer}
+            </div>
+
+        </div>
+        `;
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+    }
+
+    catch(error){
+
+        document.getElementById("thinking").remove();
+
+        chatBox.innerHTML += `
+        <div style="
+            color:#ef4444;
+            margin:15px;">
+            ❌ Error getting AI response.
+        </div>
+        `;
+
+    }
+
+}
+
+function clearChat(){
+
+    document.getElementById("chatBox").innerHTML = `
+    <div style="
+        background:#1e293b;
+        padding:15px;
+        border-radius:12px;
+        color:white;
+        max-width:75%;
+        margin-bottom:15px;">
+
+        🤖 Hello! I'm <b>AptiMind AI</b>.<br><br>
+
+        Ask me anything about:
+        <ul>
+            <li>Aptitude</li>
+            <li>Reasoning</li>
+            <li>SQL</li>
+            <li>Java</li>
+            <li>Python</li>
+            <li>Interview Preparation</li>
+        </ul>
+
+    </div>
+    `;
+
+}
+
+</script>
+
+</body>
+
+</html>

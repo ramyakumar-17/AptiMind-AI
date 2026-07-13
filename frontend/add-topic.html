@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Topic Management</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+
+    <div class="sidebar">
+
+        <h2>AptiMind AI</h2>
+
+        <a href="admin-dashboard.html">🏠 Dashboard</a>
+        <a href="add-topic.html">📚 Topics</a>
+        <a href="#">❓ Questions</a>
+        <a href="#">👥 Users</a>
+        <a href="#">📊 Results</a>
+
+    </div>
+
+    <div class="main-content">
+
+        <h1>Topic Management</h1>
+
+        <input
+            type="text"
+            id="topic"
+            placeholder="Enter Topic Name">
+
+        <button onclick="saveTopic()">
+            Save Topic
+        </button>
+
+        <br><br>
+
+        <h2>Available Topics</h2>
+
+        <table border="1" width="100%" id="topicTable">
+
+            <tr>
+                <th>S.No</th>
+                <th>Topic Name</th>
+                <th>Action</th>
+            </tr>
+
+        </table>
+
+    </div>
+
+<script>
+
+let topics = JSON.parse(localStorage.getItem("topics")) || [];
+
+displayTopics();
+
+function saveTopic(){
+
+    let topic = document.getElementById("topic").value.trim();
+
+    if(topic==""){
+
+        alert("Please enter a topic.");
+
+        return;
+
+    }
+
+    if(topics.includes(topic)){
+
+        alert("Topic already exists!");
+
+        return;
+
+    }
+
+    topics.push(topic);
+
+    localStorage.setItem("topics",JSON.stringify(topics));
+
+    document.getElementById("topic").value="";
+
+    displayTopics();
+
+    alert("Topic Added Successfully!");
+
+}
+
+function displayTopics(){
+
+    let table=document.getElementById("topicTable");
+
+    table.innerHTML=`
+
+    <tr>
+        <th>S.No</th>
+        <th>Topic Name</th>
+        <th>Action</th>
+    </tr>
+
+    `;
+
+    topics.forEach((topic,index)=>{
+
+        table.innerHTML+=`
+
+        <tr>
+
+            <td>${index+1}</td>
+
+            <td>${topic}</td>
+
+            <td>
+
+                <button onclick="editTopic(${index})">
+                ✏ Edit
+                </button>
+
+                <button onclick="deleteTopic(${index})">
+                🗑 Delete
+                </button>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+
+function editTopic(index){
+
+    let newTopic = prompt("Edit Topic Name", topics[index]);
+
+    if(newTopic == null){
+
+        return;
+
+    }
+
+    newTopic = newTopic.trim();
+
+    if(newTopic==""){
+
+        alert("Topic cannot be empty.");
+
+        return;
+
+    }
+
+    topics[index]=newTopic;
+
+    localStorage.setItem("topics",JSON.stringify(topics));
+
+    displayTopics();
+
+    alert("Topic Updated Successfully!");
+
+}
+
+function deleteTopic(index){
+
+    if(confirm("Are you sure you want to delete this topic?")){
+
+        topics.splice(index,1);
+
+        localStorage.setItem("topics",JSON.stringify(topics));
+
+        displayTopics();
+
+    }
+
+}
+
+</script>
+
+</body>
+
+</html>

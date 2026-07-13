@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Add Admin Questions</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <style>
+
+        .form-box{
+            max-width:900px;
+            margin:auto;
+        }
+
+        .option-row{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:20px;
+        }
+
+        #questionCount{
+            color:#38bdf8;
+            font-size:24px;
+            margin-bottom:20px;
+        }
+
+        #questionList .card{
+            margin-bottom:20px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <h2>AptiMind AI</h2>
+
+    <a href="admin-dashboard.html">🏠 Dashboard</a>
+    <a href="create-admin-test.html">📚 Create Test</a>
+    <a href="manage-users.html">👥 Users</a>
+    <a href="admin-results.html">📊 Results</a>
+    <a href="login.html">🚪 Logout</a>
+
+</div>
+
+<div class="main-content">
+
+<div class="form-box">
+
+<h1>📚 Add Today's Questions</h1>
+
+<h2 id="questionCount"></h2>
+
+<input
+type="text"
+id="question"
+placeholder="Enter Question">
+
+<div class="option-row">
+
+<input
+type="text"
+id="optionA"
+placeholder="Option A">
+
+<input
+type="text"
+id="optionB"
+placeholder="Option B">
+
+<input
+type="text"
+id="optionC"
+placeholder="Option C">
+
+<input
+type="text"
+id="optionD"
+placeholder="Option D">
+
+</div>
+
+<br>
+
+<select id="correctAnswer">
+
+<option value="">Select Correct Answer</option>
+
+<option value="A">Option A</option>
+<option value="B">Option B</option>
+<option value="C">Option C</option>
+<option value="D">Option D</option>
+
+</select>
+
+<br>
+
+<textarea
+id="explanation"
+rows="4"
+placeholder="Explanation">
+</textarea>
+
+<br>
+
+<button onclick="saveQuestion()">
+
+💾 Save Question
+
+</button>
+
+<button
+style="margin-left:20px;"
+onclick="publishTest()">
+
+🚀 Publish Test
+
+</button>
+
+<br><br>
+
+<h2 style="color:#38bdf8;">
+
+Today's Questions
+
+</h2>
+
+<br>
+
+<div id="questionList"></div>
+
+</div>
+
+</div>
+
+<script>
+
+const currentTestId =
+localStorage.getItem("currentTestId");
+
+const totalQuestions =
+parseInt(localStorage.getItem("adminQuestionLimit"));
+
+let adminQuestions = [];
+
+loadQuestions();
+async function loadQuestions(){
+
+    try{
+
+        const response = await fetch(`http://localhost:3000/api/tests/${currentTestId}`)
+
+        const data = await response.json();
+
+        if(data && data._id === currentTestId){
+
+            adminQuestions = data.test.questions || [];
+
+        }
+
+        updateCounter();
+        displayQuestions();
+
+    }catch(err){
+
+        console.log(err);
+
+    }
+
+}
+
+async function saveQuestion(){
+
+    const question =
+    document.getElementById("question").value.trim();
+
+    const optionA =
+    document.getElementById("optionA").value.trim();
+
+    const optionB =
+    document.getElementById("optionB").value.trim();
+
+    const optionC =
+    document.getElementById("optionC").value.trim();
+
+    const optionD =
+    document.getElementById("optionD").value.trim();
+
+    const correctAnswer =
+    document.getElementById("correctAnswer").value;
+
+    const explanation =
+    document.getElementById("explanation").value.trim();
+
+    if(
+        !question ||
+        !optionA ||
+        !optionB ||
+        !optionC ||
+        !optionD ||
+        !correctAnswer
+    ){
+
+        alert("Fill all fields");
+
+        return;
+
+    }
+
+    const response = await fetch(
+
+        `http://localhost:3000/api/tests/${currentTestId}/question`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+
+                question,
+
+                options:[
+                    optionA,
+                    optionB,
+                    optionC,
+                    optionD
+                ],
+
+                correctAnswer,
+
+                explanation
+
+            })
+
+        }
+
+    );
+
+    const data = await response.json();
+
+    if(data.success){
+
+        adminQuestions = data.test.questions;
+
+        clearForm();
+
+        updateCounter();
+
+        displayQuestions();
+
+    }
+    else{
+
+        alert(data.message);
+
+    }
+
+}
+
+function displayQuestions(){
+
+    let html="";
+
+    adminQuestions.forEach((q,index)=>{
+
+        html += `
+
+        <div class="card">
+
+            <h3>Question ${index+1}</h3>
+
+            <p><b>${q.question}</b></p>
+
+            <p>
+            A. ${q.options[0]}<br>
+            B. ${q.options[1]}<br>
+            C. ${q.options[2]}<br>
+            D. ${q.options[3]}
+            </p>
+
+            <p>
+            <b>Correct:</b> ${q.correctAnswer}
+            </p>
+
+        </div>
+
+        `;
+
+    });
+
+    document.getElementById("questionList").innerHTML =
+    html;
+
+}
+function updateCounter(){
+
+    let nextQuestion = adminQuestions.length + 1;
+
+    if(nextQuestion > totalQuestions){
+        nextQuestion = totalQuestions;
+    }
+
+    document.getElementById("questionCount").innerHTML =
+    `Question ${nextQuestion} / ${totalQuestions}`;
+
+}
+
+function clearForm(){
+
+    document.getElementById("question").value="";
+    document.getElementById("optionA").value="";
+    document.getElementById("optionB").value="";
+    document.getElementById("optionC").value="";
+    document.getElementById("optionD").value="";
+    document.getElementById("correctAnswer").value="";
+    document.getElementById("explanation").value="";
+
+}
+
+async function publishTest(){
+
+    if(adminQuestions.length != totalQuestions){
+
+        alert(`Please add exactly ${totalQuestions} questions.`);
+
+        return;
+
+    }
+
+    try{
+
+        const response = await fetch(
+
+            `http://localhost:3000/api/tests/publish/${currentTestId}`,
+
+            {
+
+                method:"PUT"
+
+            }
+
+        );
+
+        const data = await response.json();
+
+        if(data.success){
+
+            alert("🎉 Test Published Successfully!");
+
+            localStorage.removeItem("currentTestId");
+            localStorage.removeItem("adminQuestionLimit");
+
+            window.location.href = "admin-dashboard.html";
+
+        }
+        else{
+
+            alert(data.message);
+
+        }
+
+    }
+    catch(err){
+
+        console.log(err);
+
+        alert("Publish Failed");
+
+    }
+
+}
+</script>
+
+</body>
+</html>

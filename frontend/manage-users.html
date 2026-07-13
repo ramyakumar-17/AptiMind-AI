@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Manage Users</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <h2>AptiMind AI</h2>
+
+    <a href="admin-dashboard.html">🏠 Dashboard</a>
+    <a href="create-admin-test.html">📚 Create Test</a>
+    <a href="manage-users.html">👥 Users</a>
+    <a href="admin-results.html">📊 Results</a>
+    <a href="login.html">🚪 Logout</a>
+
+</div>
+
+<div class="main-content">
+
+<h1>👥 Manage Users</h1>
+
+<br>
+
+<input
+type="text"
+id="search"
+placeholder="Search User..."
+onkeyup="searchUser()">
+
+<br><br>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>S.No</th>
+<th>Full Name</th>
+<th>Email</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="userTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+<script>
+
+let users = [];
+
+async function loadUsers(){
+
+try{
+
+const response = await fetch(
+"http://localhost:3000/api/auth/users"
+);
+
+users = await response.json();
+
+displayUsers(users);
+
+}
+catch(err){
+
+console.log(err);
+
+alert("Unable to load users");
+
+}
+
+}
+
+function displayUsers(data){
+
+let html = "";
+
+data.forEach((user,index)=>{
+
+html += `
+
+<tr>
+
+<td>${index+1}</td>
+
+<td>${user.fullname}</td>
+
+<td>${user.email}</td>
+
+<td>
+
+<button onclick="deleteUser('${user._id}')">
+
+🗑 Delete
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+document.getElementById("userTable").innerHTML = html;
+
+}
+
+function searchUser(){
+
+const text =
+document.getElementById("search").value.toLowerCase();
+
+const filtered = users.filter(user =>
+
+user.fullname.toLowerCase().includes(text) ||
+
+user.email.toLowerCase().includes(text)
+
+);
+
+displayUsers(filtered);
+
+}
+
+async function deleteUser(id){
+
+if(!confirm("Are you sure you want to delete this user?")){
+
+return;
+
+}
+
+try{
+
+await fetch(
+
+`http://localhost:3000/api/auth/users/${id}`,
+
+{
+
+method:"DELETE"
+
+}
+
+);
+
+alert("User Deleted Successfully");
+
+loadUsers();
+
+}
+catch(err){
+
+console.log(err);
+
+alert("Delete Failed");
+
+}
+
+}
+
+loadUsers();
+
+</script>
+
+</body>
+
+</html>
