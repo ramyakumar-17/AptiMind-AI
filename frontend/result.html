@@ -312,7 +312,7 @@ if(testType=="AI Test"){
     );
     if(currentUser){
 
-fetch("http://localhost:3000/api/results/save",{
+fetch("https://aptimind-ai-backend.onrender.com/api/results/save",{
 
 method:"POST",
 
@@ -364,7 +364,7 @@ const testId =
 localStorage.getItem("currentTestId");
 
 fetch(
-"http://localhost:3000/api/results/admin",
+"https://aptimind-ai-backend.onrender.com/api/results/admin",
 {
 
 method:"POST",

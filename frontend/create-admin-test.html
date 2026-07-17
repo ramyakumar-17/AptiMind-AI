@@ -89,7 +89,7 @@ async function createTest(){
 
         const response = await fetch(
 
-            "http://localhost:3000/api/tests",
+            "https://aptimind-ai-backend.onrender.com/api/tests",
 
             {
 
@@ -165,7 +165,7 @@ if(!confirm("Delete Published Test?")) return;
 try{
 
 const response = await fetch(
-"http://localhost:3000/api/tests/published",
+"https://aptimind-ai-backend.onrender.com/api/tests/published",
 {
 method:"DELETE"
 });
