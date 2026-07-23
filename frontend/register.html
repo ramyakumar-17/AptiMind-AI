@@ -17,10 +17,6 @@
 
     <input type="email" id="email" placeholder="Email Address">
 
-    <input type="text" id="mobile" placeholder="Mobile Number">
-
-    <input type="text" id="college" placeholder="College Name">
-
     <input type="password" id="password" placeholder="Password">
 
     <input type="password" id="confirmPassword" placeholder="Confirm Password">
@@ -29,7 +25,7 @@
 
     <br><br>
 
-    <a href="login.html" style="color:#38bdf8;text-decoration:none;">
+    <a href="index.html" style="color:#38bdf8;text-decoration:none;">
         Already have an account? Login
     </a>
 
@@ -53,16 +49,6 @@ async function register(){
 
     if(email === ""){
         alert("Please enter your Email");
-        return;
-    }
-
-    if(mobile.length !== 10){
-        alert("Mobile Number must be 10 digits");
-        return;
-    }
-
-    if(college === ""){
-        alert("Please enter your College Name");
         return;
     }
 
